@@ -147,3 +147,148 @@ docker run -d --name nginx-always --restart always -p 8083:80 nginx
 
 Configurer un container pour qu'il redémarre seulement en cas d'échec
 docker run -d --name nginx-on-failure --restart on-failure:5 -p 8084:80 nginx
+
+Voici la **suite pour le Jour 3** de ton apprentissage Docker, dans la continuité de ce que tu as déjà documenté :
+
+---
+
+# 🐋 Introduction à Docker - Jour 3
+
+Ce projet documente ma troisième journée d'apprentissage avec Docker, en approfondissant les concepts liés aux **Dockerfiles**, **réseaux Docker** et à la création d’images personnalisées.
+
+---
+
+## 📋 Rappel du Jour 2
+
+* Gestion des images Docker (pull, rmi, search)
+* Inspection et logs des containers
+* Containers interactifs (Ubuntu, MySQL)
+* Gestion avancée (rename, commit, prune)
+* Application multi-conteneurs (Nginx + Redis)
+* Volumes Docker
+* Redémarrage automatique des containers
+
+---
+
+## 🚀 Concepts Appris le Jour 3
+
+### 1️⃣ Création d’images personnalisées avec **Dockerfile**
+
+Un `Dockerfile` permet de définir une image sur mesure.
+
+```dockerfile
+# Exemple : Créer une image Nginx personnalisée
+FROM nginx:latest
+COPY ./site-html /usr/share/nginx/html
+EXPOSE 80
+```
+
+Construire et exécuter l’image :
+
+```bash
+# Construire l’image
+docker build -t mon-nginx-personnalise .
+
+# Lancer un container basé sur cette image
+docker run -d -p 8085:80 --name nginx-custom mon-nginx-personnalise
+```
+
+---
+
+### 2️⃣ Réseaux Docker
+
+Docker propose différents types de réseaux pour connecter les containers.
+
+```bash
+# Lister les réseaux existants
+docker network ls
+
+# Créer un réseau bridge personnalisé
+docker network create mon-reseau
+
+# Lancer deux containers sur le même réseau
+docker run -d --name redis-db --network mon-reseau redis
+docker run -d --name app-web --network mon-reseau nginx
+```
+
+Tester la connectivité :
+
+```bash
+docker exec -it app-web ping redis-db
+```
+
+---
+
+### 3️⃣ Variables d’environnement et fichiers `.env`
+
+Définir des variables d’environnement dans un container :
+
+```bash
+docker run -d --name app-env -e APP_ENV=production -e APP_DEBUG=false nginx
+```
+
+Avec un fichier `.env` :
+
+`.env` :
+
+```
+MYSQL_ROOT_PASSWORD=supersecret
+MYSQL_DATABASE=appdb
+```
+
+Commande :
+
+```bash
+docker run -d --name mysql-env --env-file .env mysql:8.0
+```
+
+---
+
+### 4️⃣ Partage de fichiers avec **bind mounts**
+
+Contrairement aux volumes, les *bind mounts* permettent de partager un dossier local avec un container.
+
+```bash
+docker run -d --name nginx-bind \
+  -v $(pwd)/site-html:/usr/share/nginx/html \
+  -p 8086:80 nginx
+```
+
+---
+
+## 🎯 Exemple Pratique : Application Web + DB avec réseau et Dockerfile
+
+1. Créer un réseau dédié :
+
+```bash
+docker network create app-network
+```
+
+2. Lancer une base MySQL :
+
+```bash
+docker run -d --name db-app \
+  --network app-network \
+  -e MYSQL_ROOT_PASSWORD=monpass \
+  -e MYSQL_DATABASE=appdb \
+  mysql:8.0
+```
+
+3. Créer un `Dockerfile` pour une app PHP simple connectée à MySQL :
+
+```dockerfile
+FROM php:7.4-apache
+RUN docker-php-ext-install mysqli
+COPY ./src /var/www/html
+EXPOSE 80
+```
+
+4. Construire et exécuter :
+
+```bash
+docker build -t php-app .
+docker run -d --name web-app --network app-network -p 8087:80 php-app
+```
+
+L’application pourra se connecter à la base MySQL via `db-app`.
+
