@@ -291,4 +291,132 @@ docker run -d --name web-app --network app-network -p 8087:80 php-app
 ```
 
 L’application pourra se connecter à la base MySQL via `db-app`.
+Parfait 👍 On a déjà bien couvert les **Jours 1, 2 et 3**. Voici une version condensée et claire pour la **suite (Jour 4)**, avec de nouvelles notions utiles, tout en gardant le style homogène et allégé :
+
+---
+
+# 🐋 Introduction à Docker - Jour 4
+
+Ce projet documente ma quatrième journée d’apprentissage avec Docker, avec un focus sur **Docker Compose**, la gestion des logs et l’optimisation des images.
+
+---
+
+## 📋 Rappel du Jour 3
+
+* Création d’images personnalisées via Dockerfile
+* Réseaux Docker (bridge personnalisé, ping entre containers)
+* Variables d’environnement et `.env`
+* Bind mounts pour partager des fichiers locaux
+* Exemple pratique : app web + base de données MySQL
+
+---
+
+## 🚀 Concepts Appris le Jour 4
+
+### 1️⃣ Docker Compose (multi-conteneurs simplifié)
+
+Un fichier `docker-compose.yml` permet de lancer plusieurs services ensemble.
+
+```yaml
+version: "3.8"
+services:
+  web:
+    build: .
+    ports:
+      - "8088:80"
+    depends_on:
+      - db
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: appdb
+```
+
+Démarrer les services :
+
+```bash
+docker-compose up -d
+```
+
+Arrêter :
+
+```bash
+docker-compose down
+```
+
+---
+
+### 2️⃣ Gestion des logs centralisée
+
+```bash
+# Voir les logs d’un service avec Docker Compose
+docker-compose logs web
+
+# Suivre les logs en temps réel
+docker logs -f web
+```
+
+---
+
+### 3️⃣ Optimisation d’images Docker
+
+Réduire la taille des images avec une approche **multi-stage build** :
+
+```dockerfile
+# Étape de build
+FROM node:16 AS build
+WORKDIR /app
+COPY . .
+RUN npm install && npm run build
+
+# Étape de prod légère
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 80
+```
+
+---
+
+### 4️⃣ Nettoyage et maintenance
+
+```bash
+# Supprimer containers, images, volumes inutilisés
+docker system prune -a
+
+# Vérifier l’espace disque utilisé
+docker system df
+```
+
+---
+
+## 🎯 Exemple Pratique : Stack Web avec Compose
+
+1. Créer un projet avec :
+
+   * un container Nginx pour le front
+   * un container MySQL pour la base
+
+2. Fichier `docker-compose.yml` minimal :
+
+```yaml
+version: "3.8"
+services:
+  frontend:
+    image: nginx
+    ports:
+      - "8090:80"
+  database:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: myapp
+```
+
+3. Lancer l’ensemble :
+
+```bash
+docker-compose up -d
+```
+
 
