@@ -295,7 +295,7 @@ Parfait 👍 On a déjà bien couvert les **Jours 1, 2 et 3**. Voici une version
 
 ---
 
-# 🐋 Introduction à Docker - Jour 4
+# Docker - Jour 4
 
 Ce projet documente ma quatrième journée d’apprentissage avec Docker, avec un focus sur **Docker Compose**, la gestion des logs et l’optimisation des images.
 
