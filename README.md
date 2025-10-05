@@ -1,4 +1,4 @@
-     Introduction à Docker - Jour 1
+Introduction à Docker - Jour 1
 
 Ce projet documente ma première journée d'apprentissage avec Docker, incluant les concepts fondamentaux et des exemples pratiques.
  Prérequis
@@ -12,26 +12,39 @@ Ce projet documente ma première journée d'apprentissage avec Docker, incluant 
  Concepts Appris le Jour 1
 
 Vérifier l'installation de Docker
+```
 docker --version
 docker info
+```
 
 Lancer un container Nginx
+```
 docker run -d -p 8080:80 --name mon-premier-nginx nginx
+```
 
 Voir les containers en cours d'exécution
+```
 docker ps
+```
 
 Arrêter le container
+```
 docker stop mon-premier-nginx
+```
 
 Redémarrer le container
+```
 docker start mon-premier-nginx
+```
 
  Exemple Pratique
+
 Lancer un serveur web simple
 
 Créer et lancer un container Apache
+```
 docker run -d -p 8081:80 --name mon-apache httpd
+```
 
 Accéder au serveur : http://localhost:8081
 
@@ -116,13 +129,16 @@ Création d'une application web simple avec un serveur Nginx et une base de donn
 ```
 bash
 Lancer le container Redis
+```
 docker run -d --name redis-server redis
+```
 
 Lancer un container Nginx qui se connecte à Redis
+```
 docker run -d --name web-app --link redis-server:redis -p 8080:80 nginx
 ```
 
-📦 Gestion des volumes
+ Gestion des volumes
 
 ```bash
 Créer un volume
@@ -138,7 +154,7 @@ Inspecter un volume
 docker volume inspect mon-volume
 ```
 
-🔄 Redémarrage automatique des containers
+ Redémarrage automatique des containers
 
 ```
 bash
@@ -149,16 +165,13 @@ Configurer un container pour qu'il redémarre seulement en cas d'échec
 docker run -d --name nginx-on-failure --restart on-failure:5 -p 8084:80 nginx
 
 Voici la **suite pour le Jour 3** de ton apprentissage Docker, dans la continuité de ce que tu as déjà documenté :
+```
 
----
-
-#  Introduction à Docker - Jour 3
+Introduction à Docker - Jour 3
 
 Ce projet documente ma troisième journée d'apprentissage avec Docker, en approfondissant les concepts liés aux **Dockerfiles**, **réseaux Docker** et à la création d’images personnalisées.
 
----
-
-##  Rappel du Jour 2
+  Rappel du Jour 2
 
 * Gestion des images Docker (pull, rmi, search)
 * Inspection et logs des containers
@@ -170,14 +183,14 @@ Ce projet documente ma troisième journée d'apprentissage avec Docker, en appro
 
 ---
 
-##  Concepts Appris le Jour 3
+  Concepts Appris le Jour 3
 
-### 1️ Création d’images personnalisées avec **Dockerfile**
+1️ Création d’images personnalisées avec **Dockerfile**
 
 Un `Dockerfile` permet de définir une image sur mesure.
 
 ```dockerfile
-# Exemple : Créer une image Nginx personnalisée
+ Exemple : Créer une image Nginx personnalisée
 FROM nginx:latest
 COPY ./site-html /usr/share/nginx/html
 EXPOSE 80
@@ -186,27 +199,27 @@ EXPOSE 80
 Construire et exécuter l’image :
 
 ```bash
-# Construire l’image
+Construire l’image
 docker build -t mon-nginx-personnalise .
 
-# Lancer un container basé sur cette image
+Lancer un container basé sur cette image
 docker run -d -p 8085:80 --name nginx-custom mon-nginx-personnalise
 ```
 
 ---
 
-### 2️⃣ Réseaux Docker
+2️ Réseaux Docker
 
 Docker propose différents types de réseaux pour connecter les containers.
 
 ```bash
-# Lister les réseaux existants
+ Lister les réseaux existants
 docker network ls
 
-# Créer un réseau bridge personnalisé
+ Créer un réseau bridge personnalisé
 docker network create mon-reseau
 
-# Lancer deux containers sur le même réseau
+ Lancer deux containers sur le même réseau
 docker run -d --name redis-db --network mon-reseau redis
 docker run -d --name app-web --network mon-reseau nginx
 ```
@@ -219,7 +232,7 @@ docker exec -it app-web ping redis-db
 
 ---
 
-### 3️⃣ Variables d’environnement et fichiers `.env`
+3️ Variables d’environnement et fichiers `.env`
 
 Définir des variables d’environnement dans un container :
 
