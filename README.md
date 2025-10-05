@@ -1,7 +1,7 @@
-    🐋 Introduction à Docker - Jour 1
+     Introduction à Docker - Jour 1
 
 Ce projet documente ma première journée d'apprentissage avec Docker, incluant les concepts fondamentaux et des exemples pratiques.
-📋 Prérequis
+ Prérequis
 
     Docker Desktop installé
 
@@ -9,7 +9,7 @@ Ce projet documente ma première journée d'apprentissage avec Docker, incluant 
 
     Connaissances basiques en ligne de commande
 
-🚀 Concepts Appris le Jour 1
+ Concepts Appris le Jour 1
 
 Vérifier l'installation de Docker
 docker --version
@@ -27,7 +27,7 @@ docker stop mon-premier-nginx
 Redémarrer le container
 docker start mon-premier-nginx
 
-🎯 Exemple Pratique
+ Exemple Pratique
 Lancer un serveur web simple
 
 Créer et lancer un container Apache
@@ -35,17 +35,17 @@ docker run -d -p 8081:80 --name mon-apache httpd
 
 Accéder au serveur : http://localhost:8081
 
-🐋 Introduction à Docker - Jour 2
+ Introduction à Docker - Jour 2
 
 Ce projet documente ma deuxième journée d'apprentissage avec Docker, couvrant des concepts plus avancés et des cas d'utilisation pratiques.
 
-📋 Rappel du Jour 1
+ Rappel du Jour 1
 
 - Vérification de l'installation de Docker
 - Lancement de containers Nginx et Apache
 - Gestion basique des containers (démarrer, arrêter)
 
-🚀 Concepts Appris le Jour 2
+ Concepts Appris le Jour 2
 
 Gestion des images Docker
 
@@ -152,13 +152,13 @@ Voici la **suite pour le Jour 3** de ton apprentissage Docker, dans la continuit
 
 ---
 
-# 🐋 Introduction à Docker - Jour 3
+#  Introduction à Docker - Jour 3
 
 Ce projet documente ma troisième journée d'apprentissage avec Docker, en approfondissant les concepts liés aux **Dockerfiles**, **réseaux Docker** et à la création d’images personnalisées.
 
 ---
 
-## 📋 Rappel du Jour 2
+##  Rappel du Jour 2
 
 * Gestion des images Docker (pull, rmi, search)
 * Inspection et logs des containers
@@ -170,9 +170,9 @@ Ce projet documente ma troisième journée d'apprentissage avec Docker, en appro
 
 ---
 
-## 🚀 Concepts Appris le Jour 3
+##  Concepts Appris le Jour 3
 
-### 1️⃣ Création d’images personnalisées avec **Dockerfile**
+### 1️ Création d’images personnalisées avec **Dockerfile**
 
 Un `Dockerfile` permet de définir une image sur mesure.
 
@@ -242,181 +242,5 @@ Commande :
 docker run -d --name mysql-env --env-file .env mysql:8.0
 ```
 
----
-
-### 4️⃣ Partage de fichiers avec **bind mounts**
-
-Contrairement aux volumes, les *bind mounts* permettent de partager un dossier local avec un container.
-
-```bash
-docker run -d --name nginx-bind \
-  -v $(pwd)/site-html:/usr/share/nginx/html \
-  -p 8086:80 nginx
-```
-
----
-
-## 🎯 Exemple Pratique : Application Web + DB avec réseau et Dockerfile
-
-1. Créer un réseau dédié :
-
-```bash
-docker network create app-network
-```
-
-2. Lancer une base MySQL :
-
-```bash
-docker run -d --name db-app \
-  --network app-network \
-  -e MYSQL_ROOT_PASSWORD=monpass \
-  -e MYSQL_DATABASE=appdb \
-  mysql:8.0
-```
-
-3. Créer un `Dockerfile` pour une app PHP simple connectée à MySQL :
-
-```dockerfile
-FROM php:7.4-apache
-RUN docker-php-ext-install mysqli
-COPY ./src /var/www/html
-EXPOSE 80
-```
-
-4. Construire et exécuter :
-
-```bash
-docker build -t php-app .
-docker run -d --name web-app --network app-network -p 8087:80 php-app
-```
-
-L’application pourra se connecter à la base MySQL via `db-app`.
-Parfait 👍 On a déjà bien couvert les **Jours 1, 2 et 3**. Voici une version condensée et claire pour la **suite (Jour 4)**, avec de nouvelles notions utiles, tout en gardant le style homogène et allégé :
-
----
-
-# Docker - Jour 4
-
-Ce projet documente ma quatrième journée d’apprentissage avec Docker, avec un focus sur **Docker Compose**, la gestion des logs et l’optimisation des images.
-
----
-
-## 📋 Rappel du Jour 3
-
-* Création d’images personnalisées via Dockerfile
-* Réseaux Docker (bridge personnalisé, ping entre containers)
-* Variables d’environnement et `.env`
-* Bind mounts pour partager des fichiers locaux
-* Exemple pratique : app web + base de données MySQL
-
----
-
-## 🚀 Concepts Appris le Jour 4
-
-### 1️⃣ Docker Compose (multi-conteneurs simplifié)
-
-Un fichier `docker-compose.yml` permet de lancer plusieurs services ensemble.
-
-```yaml
-version: "3.8"
-services:
-  web:
-    build: .
-    ports:
-      - "8088:80"
-    depends_on:
-      - db
-  db:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: appdb
-```
-
-Démarrer les services :
-
-```bash
-docker-compose up -d
-```
-
-Arrêter :
-
-```bash
-docker-compose down
-```
-
----
-
-### 2️⃣ Gestion des logs centralisée
-
-```bash
-# Voir les logs d’un service avec Docker Compose
-docker-compose logs web
-
-# Suivre les logs en temps réel
-docker logs -f web
-```
-
----
-
-### 3️⃣ Optimisation d’images Docker
-
-Réduire la taille des images avec une approche **multi-stage build** :
-
-```dockerfile
-# Étape de build
-FROM node:16 AS build
-WORKDIR /app
-COPY . .
-RUN npm install && npm run build
-
-# Étape de prod légère
-FROM nginx:alpine
-COPY --from=build /app/dist /usr/share/nginx/html
-EXPOSE 80
-```
-
----
-
-### 4️⃣ Nettoyage et maintenance
-
-```bash
-# Supprimer containers, images, volumes inutilisés
-docker system prune -a
-
-# Vérifier l’espace disque utilisé
-docker system df
-```
-
----
-
-## 🎯 Exemple Pratique : Stack Web avec Compose
-
-1. Créer un projet avec :
-
-   * un container Nginx pour le front
-   * un container MySQL pour la base
-
-2. Fichier `docker-compose.yml` minimal :
-
-```yaml
-version: "3.8"
-services:
-  frontend:
-    image: nginx
-    ports:
-      - "8090:80"
-  database:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: admin
-      MYSQL_DATABASE: myapp
-```
-
-3. Lancer l’ensemble :
-
-```bash
-docker-compose up -d
-```
 
 
