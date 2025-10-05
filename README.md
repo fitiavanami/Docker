@@ -122,7 +122,7 @@ Gestion avancée des containers
     docker container prune
 ```
 
-🎯 Exemple Pratique: Application Multi-Conteneurs
+ Exemple Pratique: Application Multi-Conteneurs
 
 Création d'une application web simple avec un serveur Nginx et une base de données Redis:
 
